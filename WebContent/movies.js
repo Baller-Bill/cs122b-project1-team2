@@ -39,6 +39,7 @@ function handleMoviesResult(resultData) {
         rowHTML += "<td>" + resultData[i]["movie_year"] + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_director"] + "</td>";
         rowHTML += "<td>" + resultData[i]["genres"] + "</td>";
+        rowHTML += "<td>" + resultData[i]["stars"] + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_rating"] + "</td>";
         /*
         rowHTML +=

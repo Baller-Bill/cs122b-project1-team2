@@ -50,11 +50,29 @@ public class MoviesServlet extends HttpServlet {
 
 
             //only the movies + ratings, need to somehow display the first 3 genres of each
+
             String query = "SELECT * " +
                     "FROM movies M JOIN ratings R ON M.id = R.movie_id " +
                     "ORDER BY R.rating DESC " +
                     "LIMIT 20;";
 
+
+            /*
+            String query = "SELECT M.id, M.title, M.director, M.year, R.rating, " +
+                    "       COALESCE(GROUP_CONCAT(DISTINCT G.name ORDER BY G.name SEPARATOR ', '), 'N/A') AS genres, " +
+                    "       COALESCE(GROUP_CONCAT(DISTINCT S.name ORDER BY S.name SEPARATOR ', '), 'N/A') AS stars " +
+                    "FROM movies M " +
+                    "JOIN ratings R ON M.id = R.movie_id " +
+                    "LEFT JOIN genres_in_movies GM ON M.id = GM.movie_id " +
+                    "LEFT JOIN genres G ON GM.genre_id = G.id " +
+                    "LEFT JOIN stars_in_movies SM ON M.id = SM.movieId " +
+                    "LEFT JOIN stars S ON SM.starId = S.id " +
+                    "GROUP BY M.id, M.title, M.director, M.year, R.rating " +
+                    "ORDER BY R.rating DESC " +
+                    "LIMIT 20;"
+
+                    ;
+            */
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
 
@@ -68,6 +86,9 @@ public class MoviesServlet extends HttpServlet {
                 String rating = rs.getString("rating");
 
                 String movie_id = rs.getString("id");
+                //String genres = rs.getString("genres");
+                //String stars = rs.getString("stars");
+
 
                 String genreQuery = "SELECT G.name " +
                         "FROM genres_in_movies GM JOIN genres G ON GM.genre_id = G.id " +
@@ -79,21 +100,48 @@ public class MoviesServlet extends HttpServlet {
 
                 int genreIndex = 0;
 
-                String three_genres = "";
+                String genres = "";
                 while (genreRS.next() && genreIndex < 3) {
                     String g = genreRS.getString("name");
 
-                    if(genreIndex != 0){three_genres += ", ";}
-                    three_genres += g;
+                    if(genreIndex != 0){genres += ", ";}
+                    genres += g;
 
 
                     genreIndex++;
                 }
-                if (genreIndex == 0) {three_genres = "N/A";}
+                if (genreIndex == 0) {genres = "N/A";}
 
 
                 genreRS.close();
                 genre_statement.close();
+
+                String starQuery = "SELECT S.name " +
+                        "FROM stars_in_movies SM JOIN stars S ON SM.starId = S.id " +
+                        "WHERE SM.movieId ='" + movie_id + "' " +
+                        "LIMIT 3;";
+
+                Statement star_statement = conn.createStatement();
+                ResultSet starRS = star_statement.executeQuery(starQuery);
+
+                int starIndex = 0;
+
+                String stars = "";
+                while (starRS.next() && starIndex < 3) {
+                    String g = starRS.getString("name");
+
+                    if(starIndex != 0){stars += ", ";}
+                    stars += g;
+
+
+                    starIndex++;
+                }
+                if (starIndex == 0) {stars = "N/A";}
+
+
+                starRS.close();
+                star_statement.close();
+
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
@@ -101,7 +149,8 @@ public class MoviesServlet extends HttpServlet {
                 jsonObject.addProperty("movie_director", director);
                 jsonObject.addProperty("movie_year", year);
                 jsonObject.addProperty("movie_rating", rating);
-                jsonObject.addProperty("genres", three_genres);
+                jsonObject.addProperty("genres", genres);
+                jsonObject.addProperty("stars", stars);
                 //jsonObject.add("genres", genreArray);
 
                 jsonArray.add(jsonObject);

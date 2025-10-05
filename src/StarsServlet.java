@@ -59,7 +59,7 @@ public class StarsServlet extends HttpServlet {
             while (rs.next()) {
                 String star_id = rs.getString("id");
                 String star_name = rs.getString("name");
-                String star_dob = rs.getString("birthYear");
+                String star_dob = rs.getString("birth_year");
 
                 // Create a JsonObject based on the data we retrieve from rs
                 JsonObject jsonObject = new JsonObject();
