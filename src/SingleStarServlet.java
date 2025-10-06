@@ -53,8 +53,9 @@ public class SingleStarServlet extends HttpServlet {
             // Get a connection from dataSource
 
             // Construct a query with parameter represented by "?"
-            String query = "SELECT * from stars as s, stars_in_movies as sim, movies as m " +
-                    "where m.id = sim.movieId and sim.starId = s.id and s.id = ?";
+            String query = "SELECT s.id as star_id, s.name, s.birth_year, m.id as movie_id, m.title, m.year, m.director " +
+                    "from stars as s, stars_in_movies as sim, movies as m " +
+                    "where m.id = sim.movie_id and sim.star_id = s.id and s.id = ?";
 
             // Declare our statement
             PreparedStatement statement = conn.prepareStatement(query);
@@ -71,11 +72,11 @@ public class SingleStarServlet extends HttpServlet {
             // Iterate through each row of rs
             while (rs.next()) {
 
-                String starId = rs.getString("starId");
+                String starId = rs.getString("star_id");
                 String starName = rs.getString("name");
                 String starDob = rs.getString("birth_year");
 
-                String movieId = rs.getString("movieId");
+                String movieId = rs.getString("movie_id");
                 String movieTitle = rs.getString("title");
                 String movieYear = rs.getString("year");
                 String movieDirector = rs.getString("director");
