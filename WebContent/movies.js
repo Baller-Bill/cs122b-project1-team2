@@ -35,7 +35,7 @@ function handleMoviesResult(resultData) {
                 jsonObject.addProperty("movie_rating", rating);
                 jsonObject.addProperty("genres", three_genres);
         * */
-        rowHTML += "<td>" + resultData[i]["movie_title"] + "</td>";
+        rowHTML += "<td>" + '<a href="single-movie.html?id=' + resultData[i]["movie_id"] + '">' + resultData[i]["movie_title"] + '</a>' + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_year"] + "</td>";
         rowHTML += "<td>" + resultData[i]["movie_director"] + "</td>";
         rowHTML += "<td>" + resultData[i]["genres"] + "</td>";
