@@ -26,7 +26,7 @@ public class MoviesServlet extends HttpServlet {
 
     public void init(ServletConfig config) {
         try {
-            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedbexample");
+            dataSource = (DataSource) new InitialContext().lookup("java:comp/env/jdbc/moviedb");
         } catch (NamingException e) {
             e.printStackTrace();
         }
@@ -75,6 +75,7 @@ public class MoviesServlet extends HttpServlet {
             */
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
+            System.out.println(rs);
 
             JsonArray jsonArray = new JsonArray();
 
@@ -117,8 +118,8 @@ public class MoviesServlet extends HttpServlet {
                 genre_statement.close();
 
                 String starQuery = "SELECT S.name " +
-                        "FROM stars_in_movies SM JOIN stars S ON SM.starId = S.id " +
-                        "WHERE SM.movieId ='" + movie_id + "' " +
+                        "FROM stars_in_movies SM JOIN stars S ON SM.star_id = S.id " +
+                        "WHERE SM.movie_id ='" + movie_id + "' " +
                         "LIMIT 3;";
 
                 Statement star_statement = conn.createStatement();

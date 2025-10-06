@@ -61,7 +61,7 @@ CREATE TABLE sales (
     sale_date DATE NOT NULL,
     FOREIGN KEY (customer_id) REFERENCES customers(id),
     FOREIGN KEY (movie_id) REFERENCES movies(id)
-    );
+);
 
 CREATE TABLE ratings (
     movie_id VARCHAR(10) PRIMARY KEY,
